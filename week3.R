@@ -136,5 +136,42 @@ week3_res_diag_1 <- function() {
 }
 
 week3_model_sel_1 <- function() {
+    ## variance inflation
+    # now x2, x3 are indep of x1, the variance are close
+    n <-100; nosim <- 1000
+    x1 <- rnorm(n); x2 <- rnorm(n); x3 <-rnorm(n);
+    betas <- sapply(1:nosim, function(i) {
+        y <- x1 + rnorm(n, sd=.3)
+        c(coef(lm(y~x1))[2],
+          coef(lm(y~x1+x2))[2],
+          coef(lm(y~x1+x2+x3))[2])
+    })
+    round(apply(betas, 1, sd), 5)
+    
+    # now x2, x3 ar related with x1
+    n <-100; nosim <- 1000
+    x1 <- rnorm(n); x2 <- x1/sqrt(2) + rnorm(n)/ssqrt(2); 
+    x3 <-x1*0.95+rnorm(n) * sqrt(1-0.95^2);
+    betas <- sapply(1:nosim, function(i) {
+        y <- x1 + rnorm(n, sd=.3)
+        c(coef(lm(y~x1))[2],
+          coef(lm(y~x1+x2))[2],
+          coef(lm(y~x1+x2+x3))[2])
+    })
+    round(apply(betas, 1, sd), 5) 
+    
+    y <- x1 + rnorm(n, sd=.3)
+    a <- summary(lm(y~x1))$cov.unscaled[2,2]
+    c(summary(lm(y~x1+x2))$cov.unscaled[2,2],
+      summary(lm(y~x1+x2+x3))$cov.unscaled[2,2])/a
+    temp <- apply(betas,1,var); temp[2:3]/temp[1]
+    
+    
+    ## Swiss data VIF
+    library(car)
+    fit <- lm(Fertility~., data=swiss)
+    vif(fit)
+    sqrt(vif(fit))  #I prefer sd
+    
     
 }
