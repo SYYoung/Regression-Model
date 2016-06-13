@@ -72,7 +72,7 @@ week4_pois_2 <- function() {
 }
 
 week4_hodgepodge <- function() {
-    n <-500; s<- seq(0,4*pi,length=n); y<-sin(x)+rnorm(n,sd=.3)
+    n <-500; x<- seq(0,4*pi,length=n); y<-sin(x)+rnorm(n,sd=.3)
     knots <- seq(0,8*pi,length=20);
     splineTerms <- sapply(knots, function(knot) (x>knot)*(x-knot))
     xMat <- cbind(1,x,splineTerms)
