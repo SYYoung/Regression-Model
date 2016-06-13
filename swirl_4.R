@@ -83,5 +83,29 @@ swirl_4_over_under_fit <- function() {
 }
 
 swirl_4_binary_outcome <- function() {
+    data(ravenData)
+    mdl <- glm(ravenWinNum~ravenScore,family=binomial,data=ravenData)
+    lodds <- predict(mdl,data.frame(ravenScore=c(0,3,6)))
+    # to get the prob back, use exp
+    exp(lodds)/(1+exp(lodds))
+    exp(confint(mdl))
+    mdl0 <- glm(ravenWinNum~1, binomial, ravenData)
+    
+}
+
+swirl_4_count_outcome <- function() {
+    head(hits)
+    as.integer(head(hits[,'date']))
+    mdl <- glm(visits~date,poisson,hits)
+    summary(mdl)
+    exp(confit(mdl,'date'))
+    
+    which.max(hits[,'visits'])
+    # answer is 704
+    hits[704,]
+    
+    mdl2 <- glm(formula=simplystats~date,family=poisson,
+                offset=log(visits+1),data=hits)
+    qpois(.95,mdl2$fitted.values[704])
     
 }
